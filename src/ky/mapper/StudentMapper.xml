@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 	
+	private String name;
+	private String undergraduateLevel;
+	private String gpa;
+	private String englishLevel;
+	private String crossMajor;
+	private String numberOfExam;
+	private String prizeAndProject; -->
+<mapper namespace="ky.mapper.StudentMapper">
+<sql id="student_where" ><where>
+<if test="major != null and major !=''">
+AND c.major=#{major}
+</if>
+<if test="undergraduateLevel != null and undergraduateLevel !=''">
+AND c.undergraduateLevel=#{undergraduateLevel}
+</if>
+<if test="gpa != null and gpa != ''">
+AND c.gpa=#{gpa}
+</if>
+<if test="englishLevel != null and englishLevel != ''">
+AND c.englishLevel=#{englishLevel}
+</if>
+<if test="crossMajor != null and crossMajor != ''">
+AND c.crossMajor=#{crossMajor}
+</if>
+<if test="numberOfExam != null and numberOfExam != ''">
+AND c.numberOfExam=#{numberOfExam}
+</if>
+<if test="prizeAndProject != null and prizeAndProject != ''">
+AND c.prizeAndProject=#{prizeAndProject}
+</if>
+</where>
+</sql>
+<select id="getStudentByQueryVo" parameterType="ky.pojo.QueryVo" resultType="ky.pojo.Student">
+SELECT
+c.no,
+c.grade,
+c.undergraduateSchool,
+c.name,
+m.dict_item_name major,
+u.dict_item_name undergraduateLevel,
+g.dict_item_name gpa,
+e.dict_item_name englishLevel,
+r.dict_item_name crossMajor,
+n.dict_item_name numberOfExam,
+p.dict_item_name prizeAndProject
+FROM
+student c
+LEFT JOIN base_dict m ON c.major = m.dict_id 
+LEFT JOIN base_dict u ON c.undergraduateLevel = u.dict_id
+LEFT JOIN base_dict g ON c.gpa = g.dict_id
+LEFT JOIN base_dict e ON c.englishLevel = e.dict_id
+LEFT JOIN base_dict r ON c.crossMajor = r.dict_id
+LEFT JOIN base_dict n ON c.numberOfExam = n.dict_id
+LEFT JOIN base_dict p ON c.prizeAndProject = p.dict_id
+<include refid="student_where"></include>
+LIMIT #{start},#{rows}
+</select>
+
+<select id="getCountByQueryVo" parameterType="ky.pojo.QueryVo" resultType="int">
+SELECT
+count(1)
+FROM
+student  s
+</select>
+</mapper>
